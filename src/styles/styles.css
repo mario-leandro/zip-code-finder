@@ -1,0 +1,67 @@
+.container {
+    width: 100dvw;
+    height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #222;
+}
+
+.search-cep {
+    width: 400px;
+    height: auto;
+    padding: 25px;
+    border-radius: 15px;
+    background-color: #2e2e2e;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+form {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+form input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+form button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ea580c;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #f97316;
+}
+
+#resultado {
+    display: none;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #3e3e3e;
+    color: #fff;
+    font-size: 16px;
+}
+
+.cep-info {
+    margin-bottom: 10px;
+}
