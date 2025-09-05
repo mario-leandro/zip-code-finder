@@ -13,7 +13,7 @@ document.getElementById("cep-form").addEventListener("submit", async function (e
     }
 
     try {
-        const response = await fetch(`./api/api-cep.php`, {
+        const response = await fetch(`./api/consulta-cep.php`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -33,7 +33,7 @@ document.getElementById("cep-form").addEventListener("submit", async function (e
                     <li><strong>Logradouro:</strong> ${data.logradouro}</li>
                     <li><strong>Bairro:</strong> ${data.bairro}</li>
                     <li><strong>Cidade:</strong> ${data.localidade}</li>
-                    <li><strong>Estado:</strong> ${data.uf}</li>
+                    <li><strong>Estado:</strong> ${data.estado}</li>
                     <li><strong>DDD:</strong> ${data.ddd}</li>
                 </ul>
 
