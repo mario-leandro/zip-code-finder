@@ -34,7 +34,10 @@ document.getElementById("cep-form").addEventListener("submit", async function (e
                     <li><strong>Bairro:</strong> ${data.bairro}</li>
                     <li><strong>Cidade:</strong> ${data.localidade}</li>
                     <li><strong>Estado:</strong> ${data.uf}</li>
+                    <li><strong>DDD:</strong> ${data.ddd}</li>
                 </ul>
+
+                <button class="salvar-cep" id="salvar-cep">Salvar CEP</button>
             `;
         }
     } catch (error) {
