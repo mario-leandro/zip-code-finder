@@ -5,6 +5,9 @@ $username = 'root';
 $password = '#Mario2004';
 $dbname = 'cep_db';
 
+// Inicializa a variável de conexão
+$db_connection = null;
+
 // Cria a conexão
 try {
     $db_connection = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -13,4 +16,6 @@ try {
     echo "Conectado com sucesso";
 } catch(PDOException $e) {
     echo "Erro na conexão: " . $e->getMessage();
+} finally {
+    $db_connection = null;
 }
