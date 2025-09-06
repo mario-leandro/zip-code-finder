@@ -90,4 +90,9 @@ form button {
     background-color: #2e2e2e;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     color: #fff;
+    overflow-y: auto;
+}
+
+.cep-item {
+    margin-bottom: 15px;
 }

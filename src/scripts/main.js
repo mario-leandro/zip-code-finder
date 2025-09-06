@@ -6,7 +6,7 @@ document.getElementById("cep-form").addEventListener("submit", async function (e
     resultadoDiv.style.display = "none";
     resultadoDiv.innerHTML = "";
 
-    if(cepInput.value.trim() === "") {
+    if (cepInput.value.trim() === "") {
         resultadoDiv.style.display = "block";
         resultadoDiv.innerHTML = "<p>Por favor, insira um CEP válido.</p>";
         return;
@@ -15,34 +15,90 @@ document.getElementById("cep-form").addEventListener("submit", async function (e
     try {
         const response = await fetch(`./api/consulta-cep.php`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ cep: cepInput.value })
         });
         const data = await response.json();
 
-        if (data.erro) {
-            resultadoDiv.style.display = "block";
-            resultadoDiv.innerHTML = "<p>CEP não encontrado.</p>";
-        } else {
+        if (!data.erro) {
             resultadoDiv.style.display = "block";
             resultadoDiv.innerHTML = `
-                <ul class="cep-info">
-                    <li><strong>CEP:</strong> ${data.cep}</li>
-                    <li><strong>Logradouro:</strong> ${data.logradouro}</li>
-                    <li><strong>Bairro:</strong> ${data.bairro}</li>
-                    <li><strong>Cidade:</strong> ${data.localidade}</li>
-                    <li><strong>Estado:</strong> ${data.estado}</li>
-                    <li><strong>DDD:</strong> ${data.ddd}</li>
-                </ul>
+                    <ul class="cep-info">
+                        <li><strong>CEP:</strong> ${data.cep}</li>
+                        <li><strong>Logradouro:</strong> ${data.logradouro}</li>
+                        <li><strong>Bairro:</strong> ${data.bairro}</li>
+                        <li><strong>Cidade:</strong> ${data.localidade}</li>
+                        <li><strong>Estado:</strong> ${data.uf}</li>
+                        <li><strong>DDD:</strong> ${data.ddd}</li>
+                    </ul>
 
-                <button class="salvar-cep" id="salvar-cep">Salvar CEP</button>
-            `;
+                    <button class="salvar-cep" id="salvar-cep">Salvar CEP</button>
+                `;
+
+            // listener do botão DEVE ser adicionado aqui
+            document.getElementById("salvar-cep").addEventListener("click", async function (e) {
+                e.preventDefault();
+                try {
+                    const salvarResponse = await fetch("./api/salvar-cep.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data)
+                    });
+                    const salvarData = await salvarResponse.json();
+
+                    if (salvarData.success) {
+                        alert("CEP salvo com sucesso!");
+                    } else {
+                        alert("Erro ao salvar CEP: " + (salvarData.error || salvarData.message));
+                    }
+                } catch (error) {
+                    console.error("Erro ao salvar CEP:", error);
+                    alert("Erro de conexão ao salvar CEP.");
+                }
+            });
         }
+
     } catch (error) {
         console.error("Erro ao buscar o CEP:", error);
         resultadoDiv.style.display = "block";
         resultadoDiv.innerHTML = "<p>Ocorreu um erro ao buscar o CEP.</p>";
+    }
+});
+
+// Função para carregar os CEPs salvos ao carregar a página
+document.addEventListener("DOMContentLoaded", async (e) => {
+    const cepsSalvosDiv = document.getElementById("cep-list");
+
+    try {
+        const response = await fetch("./api/mostrar-cep-salvo.php", {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+        let result = await response.json();
+
+        if (result.success && result.data.length > 0) {
+            cepsSalvosDiv.innerHTML = ""; // Limpa o conteúdo existente
+
+            result.data.forEach(cep => {
+                const cepItem = document.createElement("div");
+                cepItem.className = "cep-item";
+                cepItem.innerHTML = `
+                        <li><strong>CEP:</strong> ${cep.cep}</li>
+                        <li><strong>Logradouro:</strong> ${cep.logradouro}</li>
+                        <li><strong>Bairro:</strong> ${cep.bairro}</li>
+                        <li><strong>Cidade:</strong> ${cep.cidade}</li>
+                        <li><strong>Estado:</strong> ${cep.estado}</li>
+                        <li><strong>DDD:</strong> ${cep.ddd}</li>
+
+                    <hr>
+                `;
+                cepsSalvosDiv.appendChild(cepItem);
+            });
+        } else {
+            cepsSalvosDiv.innerHTML = "<p>Nenhum CEP salvo.</p>";
+        }
+    } catch (error) {
+        console.error("Erro ao carregar CEPs salvos:", error);
+        cepsSalvosDiv.innerHTML = "<p>Erro ao carregar CEPs salvos.</p>";
     }
 });
