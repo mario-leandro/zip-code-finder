@@ -10,12 +10,15 @@ $db_connection = null;
 
 // Cria a conexão
 try {
-    $db_connection = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    // Define o modo de erro para lançar exceções
+    $db_connection = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);
     $db_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Conectado com sucesso";
-} catch(PDOException $e) {
-    echo "Erro na conexão: " . $e->getMessage();
-} finally {
-    $db_connection = null;
+    // NENHUM echo aqui
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'message' => 'Erro na conexão com o banco de dados',
+        'details' => $e->getMessage()
+    ]);
+    exit;
 }
