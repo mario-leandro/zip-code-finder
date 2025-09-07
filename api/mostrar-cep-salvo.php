@@ -1,35 +1,31 @@
 <?php
-
+// importação das configurações e funções
 include __DIR__ . '/database.php';
+include __DIR__ . '/funcoes.php';
 
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
+// Aplica headers de segurança e CORS
+setSecurityHeaders();
 
-// Verifica se o método da requisição é GET
+try {
+    // Conexão com o banco de dados
+    $db = getConnection();
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $db_connection = new PDO("mysql:host=$servername;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $db_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    try {
-        // Prepara a consulta SQL para buscar todos os CEPs salvos
-        $stmt = $db_connection->prepare("SELECT * FROM enderecos");
-        $stmt->execute();
-
-        // Busca todos os resultados
-        $enderecos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Retorna os resultados em formato JSON
-        echo json_encode(['success' => true, 'data' => $enderecos]);
-    } catch (PDOException $e) {
-        http_response_code(500);
-        echo json_encode([
-            'success' => false,
-            'message' => 'Erro ao buscar CEPs no banco de dados',
-            'details' => $e->getMessage()
-        ]);
+    // Verifica se o método da requisição é GET
+    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+        jsonResponse(405, ['success' => false, 'message' => 'Método não permitido, use GET']);
     }
-} else {
-    http_response_code(405);
-    echo json_encode(["success" => false, "message" => "Método não permitido, use GET"]);
+
+    // Busca todos os CEPs salvos, ordenados pelo mais recente
+    $stmt = $db->prepare("SELECT * FROM enderecos ORDER BY id ASC");
+    $stmt->execute();
+
+    // Busca os resultados como um array associativo
+    $enderecos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    jsonResponse(200, ['success' => true, 'data' => $enderecos]);
+} catch (Exception $e) {
+    jsonResponse(500, [
+        'success' => false,
+        'message' => 'Erro ao buscar CEPs' . $e->getMessage(),
+    ]);
 }
