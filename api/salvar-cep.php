@@ -31,39 +31,41 @@ try {
         exit;
     }
 
-    // Prepara a consulta SQL com placeholders para evitar SQL Injection
+    // 🔎 Verifica se o CEP já existe no banco
+    $checkStmt = $db_connection->prepare("SELECT 1 FROM enderecos WHERE cep = :cep LIMIT 1");
+    $checkStmt->execute([':cep' => $cep]);
+
+    if ($checkStmt->fetch()) {
+        http_response_code(409); // 409 Conflict → já existe
+        echo json_encode(['success' => false, 'message' => 'CEP já está salvo no banco de dados']);
+        exit;
+    }
+
+    // 📌 Se não existe, insere
     $stmt = $db_connection->prepare("
         INSERT INTO enderecos (cep, logradouro, bairro, cidade, estado, ddd)
         VALUES (:cep, :logradouro, :bairro, :cidade, :estado, :ddd)
-        ON DUPLICATE KEY UPDATE
-            logradouro = VALUES(logradouro),
-            bairro = VALUES(bairro),
-            cidade = VALUES(cidade),
-            estado = VALUES(estado),
-            ddd = VALUES(ddd)
     ");
 
-    // Prepara os dados para inserção
-    // esse dois pontos antes do nome da variável são importantes para o PDO
-    // eles indicam que é um valor será inserido ali depois
     $arrCep = [
-        ':cep' => $cep,
+        ':cep'        => $cep,
         ':logradouro' => $input['logradouro'] ?? null,
-        ':bairro' => $input['bairro'] ?? null,
-        ':cidade' => $input['localidade'] ?? null,
-        ':estado' => $input['uf'] ?? null,
-        ':ddd' => $input['ddd'] ?? null
+        ':bairro'     => $input['bairro'] ?? null,
+        ':cidade'     => $input['localidade'] ?? null,
+        ':estado'     => $input['uf'] ?? null,
+        ':ddd'        => $input['ddd'] ?? null
     ];
 
     $stmt->execute($arrCep);
 
     echo json_encode(['success' => true, 'message' => 'CEP salvo com sucesso', 'data' => $arrCep]);
+
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
         'success' => false,
         'message' => 'Erro interno do servidor',
-        'details' => $e->getMessage() // útil para debug local
+        'details' => $e->getMessage() // pode remover em produção
     ]);
 } finally {
     if (isset($db_connection)) {
