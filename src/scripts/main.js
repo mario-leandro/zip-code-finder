@@ -1,3 +1,4 @@
+// Evento do formulário para buscar o CEP
 document.getElementById("cep-form").addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -6,6 +7,7 @@ document.getElementById("cep-form").addEventListener("submit", async function (e
     resultadoDiv.style.display = "none";
     resultadoDiv.innerHTML = "";
 
+    // Verifica se o campo de CEP está vazio
     if (cepInput.value.trim() === "") {
         resultadoDiv.style.display = "block";
         resultadoDiv.innerHTML = "<p>Por favor, insira um CEP válido.</p>";
@@ -20,6 +22,8 @@ document.getElementById("cep-form").addEventListener("submit", async function (e
         });
         const data = await response.json();
 
+        // Verifica se houve erro na consulta
+        // Se não houver erro, exibe os dados e o botão de salvar
         if (!data.erro) {
             resultadoDiv.style.display = "block";
             resultadoDiv.innerHTML = `
@@ -35,7 +39,7 @@ document.getElementById("cep-form").addEventListener("submit", async function (e
                     <button class="salvar-cep" id="salvar-cep">Salvar CEP</button>
                 `;
 
-            // listener do botão DEVE ser adicionado aqui
+            // Evento do botão Salvar CEP
             document.getElementById("salvar-cep").addEventListener("click", async function (e) {
                 e.preventDefault();
                 try {
@@ -80,16 +84,15 @@ document.addEventListener("DOMContentLoaded", async (e) => {
             cepsSalvosDiv.innerHTML = ""; // Limpa o conteúdo existente
 
             result.data.forEach(cep => {
-                const cepItem = document.createElement("div");
+                const cepItem = document.createElement("li");
                 cepItem.className = "cep-item";
                 cepItem.innerHTML = `
-                        <li><strong>CEP:</strong> ${cep.cep}</li>
-                        <li><strong>Logradouro:</strong> ${cep.logradouro}</li>
-                        <li><strong>Bairro:</strong> ${cep.bairro}</li>
-                        <li><strong>Cidade:</strong> ${cep.cidade}</li>
-                        <li><strong>Estado:</strong> ${cep.estado}</li>
-                        <li><strong>DDD:</strong> ${cep.ddd}</li>
-
+                    <strong>CEP:</strong> ${cep.cep}<br>
+                    <strong>Logradouro:</strong> ${cep.logradouro}<br>
+                    <strong>Bairro:</strong> ${cep.bairro}<br>
+                    <strong>Cidade:</strong> ${cep.cidade}<br>
+                    <strong>Estado:</strong> ${cep.estado}<br>
+                    <strong>DDD:</strong> ${cep.ddd}<br>
                     <hr>
                 `;
                 cepsSalvosDiv.appendChild(cepItem);
