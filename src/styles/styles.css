@@ -103,3 +103,19 @@ form button {
 .cep-item {
     margin-bottom: 15px;
 }
+
+.cep-item button {
+    margin: 8px 0;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ef4444;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f87171;
+        transition: all 0.3s;
+    }
+}
