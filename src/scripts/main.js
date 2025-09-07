@@ -93,10 +93,39 @@ document.addEventListener("DOMContentLoaded", async (e) => {
                     <strong>Cidade:</strong> ${cep.cidade}<br>
                     <strong>Estado:</strong> ${cep.estado}<br>
                     <strong>DDD:</strong> ${cep.ddd}<br>
+                    <button class="remover-cep" data-cep="${cep.cep}">Remover</button>
                     <hr>
                 `;
                 cepsSalvosDiv.appendChild(cepItem);
+
+                const btnRemover = cepItem.querySelector(".remover-cep");
+                btnRemover.addEventListener("click", async (e) => {
+                    e.preventDefault();
+
+                    if (!confirm(`Tem certeza que deseja remover o CEP ${cep.cep}?`)) return;
+
+                    try {
+                        const response = await fetch("./api/deletar-cep.php", {
+                            method: "DELETE",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ cep: cep.cep })
+                        });
+
+                        const result = await response.json();
+
+                        if (result.success) {
+                            alert(result.message);
+                            cepItem.remove();
+                        } else {
+                            alert("Erro: " + result.message);
+                        }
+                    } catch (error) {
+                        console.error("Erro ao remover CEP:", error);
+                        alert("Erro de conexão ao tentar remover o CEP.");
+                    }
+                });
             });
+
         } else {
             cepsSalvosDiv.innerHTML = "<p>Nenhum CEP salvo.</p>";
         }
