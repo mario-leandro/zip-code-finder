@@ -59,7 +59,6 @@ try {
     $stmt->execute($arrCep);
 
     echo json_encode(['success' => true, 'message' => 'CEP salvo com sucesso', 'data' => $arrCep]);
-
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
