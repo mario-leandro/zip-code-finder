@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async (e) => {
         let result = await response.json();
 
         if (result.success && result.data.length > 0) {
-            cepsSalvosDiv.innerHTML = ""; // Limpa o conteúdo existente
+            cepsSalvosDiv.innerHTML = "";
 
             result.data.forEach(cep => {
                 const cepItem = document.createElement("li");

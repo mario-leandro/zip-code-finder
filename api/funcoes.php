@@ -1,11 +1,11 @@
 <?php
 // Força headers de segurança em TODAS as respostas
 function setSecurityHeaders(): void {
-    header('Content-Type: application/json; charset=utf-8');
-    header('Access-Control-Allow-Origin: *');
-    header("X-Content-Type-Options: nosniff");
-    header("X-Frame-Options: DENY");
-    header("X-XSS-Protection: 1; mode=block");
+    header('Content-Type: application/json; charset=utf-8'); // Define o tipo de conteúdo como JSON
+    header('Access-Control-Allow-Origin: *'); // Permite CORS de qualquer origem
+    header("X-Content-Type-Options: nosniff"); // Previne MIME-sniffing
+    header("X-Frame-Options: DENY"); // Previne clickjacking
+    header("X-XSS-Protection: 1; mode=block"); // Habilita proteção contra XSS
 }
 
 // Resposta JSON padronizada
