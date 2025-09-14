@@ -2,7 +2,7 @@
 // Configurações do banco de dados
 $servername = 'localhost';
 $username   = 'root';
-$password   = '#Mario2004';
+$password   = 'minha_senha';
 $dbname     = 'cep_db';
 
 // Função para obter uma conexão PDO
